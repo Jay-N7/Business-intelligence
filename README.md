@@ -1,4 +1,4 @@
-# Sales Prediction Project ~ Jayan
+# Sales Prediction Project 
 
 This project analyzes sales data and creates machine learning models to predict future sales trends.
 
@@ -59,4 +59,3 @@ sales_prediction_project/
     └── dashboard.html            # Dashboard page
 ```
 
-# ATTACHING RQUIRED SCREENSHOTS IN TH MAIL
