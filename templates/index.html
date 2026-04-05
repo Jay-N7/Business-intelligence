@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="jumbotron bg-light p-5 rounded-3">
+            <h1 class="display-4">Sales Prediction Dashboard</h1>
+            <p class="lead">Analyze sales data and make predictions using machine learning.</p>
+            <a class="btn btn-primary btn-lg" href="/dashboard" role="button">View Dashboard</a>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Data Analysis</h5>
+                <p class="card-text">Explore sales trends, patterns, and insights from the data.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Visualizations</h5>
+                <p class="card-text">Interactive charts and graphs showing sales performance.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Predictions</h5>
+                <p class="card-text">Machine learning powered sales forecasting.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

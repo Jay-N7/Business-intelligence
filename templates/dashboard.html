@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Sales Analysis Dashboard</h1>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Sales Over Time</h5>
+            </div>
+            <div class="card-body">
+                <div id="sales-over-time-chart"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Monthly Sales Analysis</h5>
+            </div>
+            <div class="card-body">
+                <div id="monthly-sales-chart"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Sales Prediction</h5>
+            </div>
+            <div class="card-body">
+                <form id="prediction-form">
+                    <div class="mb-3">
+                        <label for="year" class="form-label">Choose Year</label>
+                        <input type="number" class="form-control" id="year" value="2024">
+                    </div>
+                    <div class="mb-3">
+                        <label for="month" class="form-label">Which Month</label>
+                        <input type="number" class="form-control" id="month" min="1" max="12" value="1">
+                    </div>
+                    <div class="mb-3">
+                        <label for="day" class="form-label">Exact Day</label>
+                        <input type="number" class="form-control" id="day" min="1" max="31" value="1">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Predict Sales</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Prediction Results after analysis</h5>
+            </div>
+            <div class="card-body">
+                <div id="prediction-result">
+                    <p>Enter Date and click "Predict Sales" to see the prediction.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Load sales over time chart
+fetch('/api/sales_over_time')
+    .then(response => response.json())
+    .then(data => {
+        Plotly.newPlot('sales-over-time-chart', data.data, data.layout);
+    });
+
+// Load monthly sales chart
+fetch('/api/monthly_sales')
+    .then(response => response.json())
+    .then(data => {
+        Plotly.newPlot('monthly-sales-chart', data.data, data.layout);
+    });
+
+// Handle prediction form
+document.getElementById('prediction-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = {
+        year: parseInt(document.getElementById('year').value),
+        month: parseInt(document.getElementById('month').value),
+        day: parseInt(document.getElementById('day').value),
+        day_of_week: new Date(
+            document.getElementById('year').value,
+            document.getElementById('month').value - 1,
+            document.getElementById('day').value
+        ).getDay(),
+        sales_lag_1: 1000,  // Default values - you may want to make these configurable
+        sales_lag_7: 950,
+        sales_rolling_7: 1025
+    };
+    
+    fetch('/api/predict', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        const resultDiv = document.getElementById('prediction-result');
+        if (data.status === 'success') {
+            resultDiv.innerHTML = `
+                <div class="alert alert-success">
+                    <h6>Predicted Sales: $${data.prediction.toFixed(2)}</h6>
+                    <p>This prediction is based on the selected date and historical patterns.</p>
+                </div>
+            `;
+        } else {
+            resultDiv.innerHTML = `
+                <div class="alert alert-danger">
+                    <h6>Error:</h6>
+                    <p>${data.error}</p>
+                </div>
+            `;
+        }
+    });
+});
+</script>
+{% endblock %}
+
